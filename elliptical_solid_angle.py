@@ -45,8 +45,8 @@ def r_1(phi, a, b):
     """Calculates the distance from the point of interest to the edge of the
     ellipse, in the plane of the ellipse. For the case p = 0."""
     
-    denominator = (a*np.sin(phi))**2 + (b*np.sin(phi))**2
-    result = a*b/denominator
+    denominator = (a*np.sin(phi))**2 + (b*np.cos(phi))**2
+    result = a*b/np.sqrt(denominator)
     return(result)
 
 def r_2(p, phi, a, b):
@@ -160,9 +160,11 @@ def solid_angle_calc(p, h, a, b):
     """
     
     if p == 0:
-        omega = 2*np.pi - integrate.quad(integrand_1, 0, np.pi*2, args=(h,a,b,))[0]
+        omega = np.pi - integrate.quad(integrand_1, 0, np.pi, args=(h,a,b,))[0]
+        omega = 2*omega
     elif p < a:
-        omega = 2*np.pi - integrate.quad(integrand_2, 0, 2*np.pi, args=(p,h,a,b,))[0]
+        omega = np.pi - integrate.quad(integrand_2, 0, np.pi, args=(p,h,a,b,))[0]
+        omega = 2*omega
     elif p == a:
         omega = np.pi - integrate.quad(integrand_3, 0, np.pi/2, args=(p,h,a,b,))[0]
     else:
@@ -195,15 +197,15 @@ def solid_angle_calc2(p, h, a, b):
     if p == 0:
         th_1 = lambda y : theta_1(h, y, a, b)
         integrand = lambda y,z : np.sin(y)
-        omega = integrate.dblquad(integrand, 0, 2*np.pi, 0, th_1)[0]
+        omega = 2*integrate.dblquad(integrand, 0, np.pi, lambda x : 0, th_1)[0]
     elif p < a:
-        th_2 = lambda y : theta_2(h, y, a, b)
+        th_2 = lambda y : theta_2(p, h, y, a, b)
         integrand = lambda y,z : np.sin(y)
-        omega = integrate.dblquad(integrand, 0, 2*np.pi, 0, th_2)[0]
+        omega = 2*integrate.dblquad(integrand, 0, np.pi, lambda x : 0, th_2)[0]
     elif p == a:
-        th_3 = lambda y: theta_3(h, y, a, b)
+        th_3 = lambda y: theta_3(p, h, y, a, b)
         integrand = lambda y,z : 2*np.sin(y)
-        omega = integrate.dblquad(integrand, 0, np.pi/2, 0, th_3)[0]
+        omega = integrate.dblquad(integrand, 0, np.pi/2, lambda x : 0, th_3)[0]
     else:
         phi_max = phi_max_calc(p, a, b)
         th_4 = lambda y : theta_4(p, h, y, a, b)
