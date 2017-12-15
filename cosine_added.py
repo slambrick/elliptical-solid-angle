@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Created on Fri Dec 15 14:13:12 2017
 
@@ -30,6 +28,10 @@ import elliptical_solid_angle as esa
 plt.style.use("ggplot")
 
 def intensity(p, h, a, b):
+    """Calculates the intensity of a cosine distribution that enters an elliptical
+    appeture.
+    """
+    
     if p < a:
         th_2 = lambda y : esa.theta_2(p, h, y, a, b)
         integrand = lambda y : np.cos(2*th_2(y))
@@ -48,6 +50,10 @@ def intensity(p, h, a, b):
     return(I)
 
 def intensity2(p, h, a, b):
+    """Calculates the intensity of a cosine distribution that enters an elliptical
+    appeture. Uses a double integral.
+    """
+    
     if p == 0:
         th_1 = lambda y : esa.theta_1(h, y, a, b)
         integrand = lambda y,z : np.sin(y)*np.cos(y)
@@ -94,7 +100,7 @@ if __name__ == "__main__":
     
     # Normailse the two sets of data so that the values are the proportion of
     # the distribution (uniform or cosine) that from the hemisphere enter the 
-    # ellipse
+    # ellipse.
     omegas = omegas/(2*np.pi)
     omegas2 = omegas2/(2*np.pi)
     intensities = intensities/np.pi
