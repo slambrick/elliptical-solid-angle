@@ -15,6 +15,10 @@ The two functions are `solid_angle_calc` and `solid_angle_calc2`, both of which 
 
 returns the solid angle subtended by an ellipse with semi-axes of `a` and `b` (the point of interest lying along the axis a when projected into the plane of the ellipse). `p` is the distance between the point and the centre of the ellipse when the point is projected into the plane of the ellipse. `h` is the perpendicular distance between the poin and the plane of the ellipse.
 
+## Note
+
+This code is undergoing testing at the moment.
+
 ## Licence
 
 This code is provided with the MIT licence.
