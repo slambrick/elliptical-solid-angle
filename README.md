@@ -9,7 +9,7 @@ This module includes functions to perform those integrals. Two functions are pro
 
 ## Requirments
 
-The module use `numpy` and `scipy.integrate`. The example script `cosine_added.py` also makes use of `matplotlib.pyplot`
+The module use `numpy` and `scipy.integrate`. The example script `cosine_added.py` also makes use of `matplotlib.pyplot`. The code was written for python3.
 
 ## Code example
 
