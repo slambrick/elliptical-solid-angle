@@ -9,9 +9,11 @@ This module includes functions to perform those integrals. Two functions are pro
 
 ## Code example
 
-The two functions are solid_angle_calc and solid_angle_calc2, both of which take four arguments.
-    solid_angle_calc(p, h, a, b)
-returns the solid angle subtended by an ellipse with semi-axes of a and b (the point of interest lying along the axis a when projected into the plane of the ellipse). p is the distance between the point and the centre of the ellipse when the point is projected into the plane of the ellipse. h is the perpendicular distance between the poin and the plane of the ellipse.
+The two functions are `solid_angle_calc` and `solid_angle_calc2`, both of which take four arguments.
+
+`solid_angle_calc(p, h, a, b)`
+
+returns the solid angle subtended by an ellipse with semi-axes of `a` and `b` (the point of interest lying along the axis a when projected into the plane of the ellipse). `p` is the distance between the point and the centre of the ellipse when the point is projected into the plane of the ellipse. `h` is the perpendicular distance between the poin and the plane of the ellipse.
 
 ## Licence
 
