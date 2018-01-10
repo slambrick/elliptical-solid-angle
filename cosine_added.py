@@ -1,7 +1,9 @@
 """
 Created on Fri Dec 15 14:13:12 2017
 
-@author: Sam Lambrick
+Copyright (c) 2017, Sam Lambrick 
+All rights reserverd.
+Subject to the MIT licence.
 
 This script makes use of the elliptical_solid_angle module to calculate solid 
 angles and uses the functions from that module to add a cosine distribution to 
