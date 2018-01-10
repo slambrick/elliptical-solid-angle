@@ -1,7 +1,9 @@
 """
 Created on Fri Dec  8 16:58:00 2017
 
-@author: Sam Lambrick
+Copyright (c) 2017, Sam Lambrick 
+All rights reserverd.
+Subject to the MIT licence.
 
 Contains the nessacery functions to perform on-axis analytical solid angle
 integrals for ellipses. Also contains a function for integrating and calculating
