@@ -13,7 +13,7 @@ The derivation of the functions was performed by Abbas et al. 2015, for an
 understanding of the equations used it is recommened to look there.
 doi:10.1016/j.nima.2014.10.061
 
-The derivation of the simpler general function (using vector potentials) was 
+The derivation of the simpler general function (using vector potentials) was
 done by John T. Conway 2010. His formual should be used in general, however the
 geometric derivation of Abbas et al. can be combined more readily with other
 functions.
@@ -91,12 +91,12 @@ def r_3(p, phi, a, b):
     return(result)
 
 
-## This is the negative of what it is in the paper
+# This is the negative of what it is in the paper
 def r_4(p, phi, a, b):
     """Calculates the distance from the point of interest to the edge of the
     ellipse projected in the plane of the ellipse. For the case p > a."""
 
-    numerator1 = a*a*p* (np.sin(phi))**2 * sec(phi)
+    numerator1 = a*a*p*(np.sin(phi))**2 * sec(phi)
     numerator2 = a*b*np.sqrt((b*np.cos(phi))**2 + (a*a-p*p)*(np.sin(phi))**2)
     demoninator = (a*np.sin(phi))**2 + (b*np.cos(phi))**2
     result = ((numerator1 + numerator2)/demoninator) - p*sec(phi)
@@ -126,8 +126,8 @@ def r_6(p, q, phi, a, b):
 
 
 def r_8(p, q, phi, a, b):
-    """Calculates the distance between the point of interest and the edge of the
-    ellipse (projected into the plane of the ellipse) along the line of
+    """Calculates the distance between the point of interest and the edge of
+    the ellipse (projected into the plane of the ellipse) along the line of
     integration."""
 
     tmp = (a*np.sin(phi))**2 + (b*np.cos(phi))**2
@@ -218,7 +218,8 @@ def integrand_3(phi, p, h, a, b):
 
 def integrand_4(phi, p, h, a, b):
     """Solid angle integrand for the case p > a."""
-    result = 2*(np.cos(theta_4(p, h, phi, a, b)) - np.cos(theta_5(p, h, phi, a, b)))
+    result = 2*(np.cos(theta_4(p, h, phi, a, b)) - np.cos(theta_5(p, h, phi,
+                                                                  a, b)))
     return(result)
 
 
@@ -230,7 +231,8 @@ def integrand_5(phi, p, q, h, a, b):
 
 def integrand_6(phi, p, q, h, a, b):
     """Solid angle integrand for the case rho > a, rho > b."""
-    result = np.cos(theta_8(p, q, h, phi, a, b)) - np.cos(theta_9(p, q, h, phi, a, b))
+    result = np.cos(theta_8(p, q, h, phi, a, b)) - np.cos(theta_9(p, q, h, phi,
+                                                                  a, b))
     return(result)
 
 
@@ -258,8 +260,8 @@ def phi_primeprime_max_calc(p, q, a, b):
 def integrand_general(phi, p, q, h, a, b):
     """Integrand for the general case from 'John T. Conway' 'Analytic solution
     for the solid angle subtended at a point source radiation vector potential'
-    which claims to be general, unlike Abbas et.al. who do not consider the case
-    inside the bounding box but outisde the ellipse."""
+    which claims to be general, unlike Abbas et.al. who do not consider the
+    case inside the bounding box but outisde the ellipse."""
 
     tmp = p*p + q*q + h*h + 2*a*p*np.cos(phi) + 2*b*q*np.sin(phi) + \
         (a*np.cos(phi))**2 + (b*np.sin(phi))**2
@@ -271,7 +273,7 @@ def integrand_general(phi, p, q, h, a, b):
 
 
 def solid_angle_calc_general(p, q, h, a, b):
-    """Calculates the solid angle using the formula derived by John T. Conway 
+    """Calculates the solid angle using the formula derived by John T. Conway
     2010. Is faster than the alternative integral in 'solid_angle_calc'.
 
     Inputs:
@@ -279,8 +281,8 @@ def solid_angle_calc_general(p, q, h, a, b):
          ellipse, projected into the plane of the ellipse along the major axis.
          Should not be negative.
      q - The distance between the point of interest and the centre of the
-         ellipse, projected into the plane of the elllipse along the minor axis.
-         Should not be negative
+         ellipse, projected into the plane of the elllipse along the minor
+         axis. Should not be negative
      h - The perpendicular distance between the point of interest and the plane
          of the ellipse. Should not be negative.
      a - The semi-axis of the ellipse along which the point of interest lies
@@ -289,10 +291,11 @@ def solid_angle_calc_general(p, q, h, a, b):
 
     Output:
      omega - The solid angle subtended by the ellipse from the point of
-             interest 
+             interest
     """
-    
-    omega = integrate.quad(integrand_general, 0, 2*np.pi, args=(p,q,h,a,b,))[0]
+
+    omega = integrate.quad(integrand_general, 0, 2*np.pi,
+                           args=(p, q, h, a, b,))[0]
     return(omega)
 
 
@@ -306,8 +309,8 @@ def solid_angle_calc(p, q, h, a, b):
          ellipse, projected into the plane of the ellipse along the major axis.
          Should not be negative.
      q - The distance between the point of interest and the centre of the
-         ellipse, projected into the plane of the elllipse along the minor axis.
-         Should not be negative
+         ellipse, projected into the plane of the elllipse along the minor
+         axis. Should not be negative
      h - The perpendicular distance between the point of interest and the plane
          of the ellipse. Should not be negative.
      a - The semi-axis of the ellipse along which the point of interest lies
@@ -331,22 +334,27 @@ def solid_angle_calc(p, q, h, a, b):
     if q == 0:
         # The cases of the point of interest lying along an axis of the ellipse
         if p == 0:
-            omega = np.pi - integrate.quad(integrand_1, 0, np.pi, args=(h,a,b,))[0]
+            omega = np.pi - integrate.quad(integrand_1, 0, np.pi,
+                                           args=(h, a, b,))[0]
             omega = 2*omega
         elif p < a:
-            omega = np.pi - integrate.quad(integrand_2, 0, np.pi, args=(p,h,a,b,))[0]
+            omega = np.pi - integrate.quad(integrand_2, 0, np.pi,
+                                           args=(p, h, a, b,))[0]
             omega = 2*omega
         elif p == a:
-            omega = np.pi - integrate.quad(integrand_3, 0, np.pi/2, args=(p,h,a,b,))[0]
+            omega = np.pi - integrate.quad(integrand_3, 0, np.pi/2,
+                                           args=(p, h, a, b,))[0]
         else:
             phi_max = phi_max_calc(p, a, b)
-            omega = integrate.quad(integrand_4, 0, phi_max, args=(p,h,a,b,))[0]
+            omega = integrate.quad(integrand_4, 0, phi_max,
+                                   args=(p, h, a, b,))[0]
     else:
         # The case of the point of interest not lying along an axis of the
         # ellispe
         if (p**2/a**2 + q**2/b**2) < 1:
             # Point inside the ellipse
-            omega = 2*np.pi - integrate.quad(integrand_5, 0, 2*np.pi, args=(p,q,h,a,b,))[0]
+            omega = 2*np.pi - integrate.quad(integrand_5, 0, 2*np.pi,
+                                             args=(p, q, h, a, b,))[0]
         elif p > a or q > b:
             # Point outiside of the bounding box
             if q > b and p <= a:
@@ -358,7 +366,8 @@ def solid_angle_calc(p, q, h, a, b):
                 b = tmp
             phi_min = phi_prime_max_calc(p, q, a, b)
             phi_max = phi_primeprime_max_calc(p, q, a, b)
-            omega = integrate.quad(integrand_6, phi_min, phi_max, args=(p,q,h,a,b,))[0]
+            omega = integrate.quad(integrand_6, phi_min, phi_max,
+                                   args=(p, q, h, a, b,))[0]
         else:
             # Point outside of the ellipse but inside the bounding box
             # TODO: derive expression for this
@@ -402,31 +411,35 @@ def solid_angle_calc2(p, q, h, a, b):
     if q == 0:
         # The cases of the point of interest lying along an axis of the ellipse
         if p == 0:
-            th_1 = lambda y : theta_1(h, y, a, b)
-            integrand = lambda y,z : np.sin(y)
-            omega = 2*integrate.dblquad(integrand, 0, np.pi, lambda x : 0, th_1)[0]
+            th_1 = lambda y: theta_1(h, y, a, b)
+            integrand = lambda y,z: np.sin(y)
+            omega = 2*integrate.dblquad(integrand, 0, np.pi, lambda x: 0,
+                                        th_1)[0]
         elif p < a:
-            th_2 = lambda y : theta_2(p, h, y, a, b)
-            integrand = lambda y,z : np.sin(y)
-            omega = 2*integrate.dblquad(integrand, 0, np.pi, lambda x : 0, th_2)[0]
+            th_2 = lambda y: theta_2(p, h, y, a, b)
+            integrand = lambda y,z: np.sin(y)
+            omega = 2*integrate.dblquad(integrand, 0, np.pi, lambda x: 0,
+                                        th_2)[0]
         elif p == a:
-            th_3 = lambda y : theta_3(p, h, y, a, b)
-            integrand = lambda y,z : 2*np.sin(y)
-            omega = integrate.dblquad(integrand, 0, np.pi/2, lambda x : 0, th_3)[0]
+            th_3 = lambda y: theta_3(p, h, y, a, b)
+            integrand = lambda y,z: 2*np.sin(y)
+            omega = integrate.dblquad(integrand, 0, np.pi/2, lambda x: 0,
+                                      th_3)[0]
         else:
             phi_max = phi_max_calc(p, a, b)
-            th_4 = lambda y : theta_4(p, h, y, a, b)
-            th_5 = lambda y : theta_5(p, h, y, a, b)
-            integrand = lambda y,z : 2*np.sin(y)
+            th_4 = lambda y: theta_4(p, h, y, a, b)
+            th_5 = lambda y: theta_5(p, h, y, a, b)
+            integrand = lambda y,z: 2*np.sin(y)
             omega = integrate.dblquad(integrand, 0, phi_max, th_4, th_5)[0]
     else:
         # The case of the point of interest not lying along an axis of the
         # ellispe
         if (p**2/a**2 + q**2/b**2) < 1:
             # Point inside the ellipse
-            th_6 = lambda y : theta_6(p, q, h, y, a, b)
-            integrand = lambda y,z : np.sin(y)
-            omega = integrate.dblquad(integrand, 0, 2*np.pi, lambda x : 0, th_6)[0]
+            th_6 = lambda y: theta_6(p, q, h, y, a, b)
+            integrand = lambda y,z: np.sin(y)
+            omega = integrate.dblquad(integrand, 0, 2*np.pi, lambda x: 0,
+                                      th_6)[0]
         elif p > a or q > b:
              # Point outiside of the bounding box
             if q > b and p <= a:
@@ -436,15 +449,16 @@ def solid_angle_calc2(p, q, h, a, b):
                 tmp = a
                 a = b
                 b = tmp
-            th_8 = lambda y : theta_8(p, q, h, y, a, b)
-            th_9 = lambda y : theta_9(p, q, h, y, a, b)
+            th_8 = lambda y: theta_8(p, q, h, y, a, b)
+            th_9 = lambda y: theta_9(p, q, h, y, a, b)
             phi_min = phi_prime_max_calc(p, q, a, b)
             phi_max = phi_primeprime_max_calc(p, q, a, b)
             integrand = lambda y,z: np.sin(y)
-            omega = integrate.dblquad(integrand, phi_min, phi_max, th_8, th_9)[0]
+            omega = integrate.dblquad(integrand, phi_min, phi_max, th_8,
+                                      th_9)[0]
         else:
             # Point outside of the ellipse but inside the bounding box
             # TODO: derive and implement this
-            omega = solid_angle_calc_general(p, q, h, a, b);
+            omega = solid_angle_calc_general(p, q, h, a, b)
 
     return(omega)
