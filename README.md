@@ -15,9 +15,9 @@ The module use `numpy` and `scipy.integrate`. The example scripts `cosine_added.
 
 The three functions are `solid_angle_calc`, `solid_angle_calc2`, `solid_angle_calc_general`, all of which take four arguments.
 
-`solid_angle_calc(p, h, a, b)`
+`solid_angle_calc(p, q, h, a, b)`
 
-returns the solid angle subtended by an ellipse with semi-axes of `a` and `b` (the point of interest lying along the axis a when projected into the plane of the ellipse). `p` is the distance between the point and the centre of the ellipse when the point is projected into the plane of the ellipse. `h` is the perpendicular distance between the poin and the plane of the ellipse.
+returns the solid angle subtended by an ellipse with semi-axes of `a` and `b` (the point of interest lying along the axis `a` when projected into the plane of the ellipse). `p` is the distance between the point and the centre of the ellipse along the axis of `a`; `q` is the distane between the point and the centre of the ellipse along the axis of `b`. `h` is the perpendicular distance between the poin and the plane of the ellipse.
 
 The script `cosine_added.py` uses the two solid angle functions to calculate the solid angle for a fixed `h` for a number of `p` values. It also modulates the results by a cosine distribution (centred normally to the plane of the ellipse), [link](https://en.wikipedia.org/wiki/Lambert%27s_cosine_law). For both the raw solid anlge and the modulated cosine functions the script makes use of pyplot to plot the results and save them to a `.eps` file.
 
