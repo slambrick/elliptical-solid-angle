@@ -1,7 +1,7 @@
 """
 Created on Fri Dec  8 16:58:00 2017
 
-Copyright (c) 2017-19, Sam Lambrick
+Copyright (c) 2017-19-22, Sam Lambrick
 All rights reserverd.
 Subject to the MIT licence.
 
@@ -10,7 +10,8 @@ integrals for ellipses. Also contains a function for integrating and
 calculating the solid angle.
 
 The derivation of the functions was performed by Abbas et al. 2015, for an
-understanding of the equations used it is recommened to look there.
+understanding of the equations used it is recommened to look there. The
+variables follow the convention used there.
 doi:10.1016/j.nima.2014.10.061
 
 The derivation of the simpler general function (using vector potentials) was
@@ -38,7 +39,7 @@ Variables used here, using the same naming convention as used by Abbas:
           point of interest projected into the plane of the ellipse
 
 Solid angle functions:
-    solid_angle_calc_general - performs a single integration to calculate the
+    calc_omega        - performs a single integration to calculate the
                         solid angle using integral forms from John T. Conway
     solid_angle_calc  - performs a single integration to calculate the solid
                         angle using the integral forms from Abbas et al. with
@@ -46,7 +47,10 @@ Solid angle functions:
     solid_angle_calc2 - performs a double inetegration, using the form directly
                         from Abbas et al., to calculate the solid angles
 
-Neither of these functions return the error estimate on the integrals, however
+Calling syntax:
+    solid_angle_calc...(p, q, a, b, h)
+
+None of these functions return the error estimate on the integrals, however
 it is easy to modify them to do so.
 
 This module makes use of numeric python (numpy) and scientific python (scipy).
@@ -59,6 +63,9 @@ import scipy.integrate as integrate
 def sec(theta):
     """Calculates the sectant, 1/cos(theta)."""
     return(1/np.cos(theta))
+
+
+## Geometric functions for Abbas ---------------------------------------------#
 
 
 def r_1(phi, a, b):
@@ -198,6 +205,8 @@ def theta_9(p, q, h, phi, a, b):
     return(result)
 
 
+## Integrands for Abbas ------------------------------------------------------#
+
 def integrand_1(phi, h, a, b):
     """Solid angle integrand for the case p = 0."""
     result = np.cos(theta_1(h, phi, a, b))
@@ -256,48 +265,7 @@ def phi_primeprime_max_calc(p, q, a, b):
     result = np.arctan(arg_numerator/(p*p - a*a))
     return(result)
 
-
-def integrand_general(phi, p, q, h, a, b):
-    """Integrand for the general case from 'John T. Conway' 'Analytic solution
-    for the solid angle subtended at a point source radiation vector potential'
-    which claims to be general, unlike Abbas et.al. who do not consider the
-    case inside the bounding box but outisde the ellipse."""
-
-    tmp = p*p + q*q + h*h + 2*a*p*np.cos(phi) + 2*b*q*np.sin(phi) + \
-        (a*np.cos(phi))**2 + (b*np.sin(phi))**2
-    term1 = 1 - h/(np.sqrt(tmp))
-    tmp = tmp - h*h
-    term2 = (a*b + p*b*np.cos(phi) + q*a*np.sin(phi))/(tmp)
-    result = term1*term2
-    return(result)
-
-
-def solid_angle_calc_general(p, q, h, a, b):
-    """Calculates the solid angle using the formula derived by John T. Conway
-    2010. Is faster than the alternative integral in 'solid_angle_calc'.
-
-    Inputs:
-     p - The distance between the point of interest and the centre of the
-         ellipse, projected into the plane of the ellipse along the major axis.
-         Should not be negative.
-     q - The distance between the point of interest and the centre of the
-         ellipse, projected into the plane of the elllipse along the minor
-         axis. Should not be negative
-     h - The perpendicular distance between the point of interest and the plane
-         of the ellipse. Should not be negative.
-     a - The semi-axis of the ellipse along which the point of interest lies
-         when it is projected into the plane of the ellipse.
-     b - The other semi-axis of the ellipse.
-
-    Output:
-     omega - The solid angle subtended by the ellipse from the point of
-             interest
-    """
-
-    omega = integrate.quad(integrand_general, 0, 2*np.pi,
-                           args=(p, q, h, a, b,))[0]
-    return(omega)
-
+## Abbas solid angle calculations --------------------------------------------#
 
 def solid_angle_calc(p, q, h, a, b):
     """Calculates the solid angle subtended by an ellipse at a point on axis of
@@ -462,3 +430,105 @@ def solid_angle_calc2(p, q, h, a, b):
             omega = solid_angle_calc_general(p, q, h, a, b)
 
     return(omega)
+
+
+## Cosine modified integrals -------------------------------------------------#
+
+
+# Two functions are included, one that performs a double numerical integral
+# and the other that has had the theta integral performed analytically. The
+# double integral is included for completness, and as a demonstartion of how the
+# inclusion of distributions can be achieved.
+
+
+def cosine_intensity(p, h, a, b):
+    """Calculates the intensity of a cosine distribution that enters an
+    elliptical appeture."""
+
+    if p < a:
+        th_2 = lambda y: theta_2(p, h, y, a, b)
+        integrand = lambda y: np.cos(2*th_2(y))
+        II = np.pi/2 - 0.25*integrate.quad(integrand, 0, 2*np.pi)[0]
+    elif p == a:
+        th_3 = lambda y: theta_3(p, h, y, a, b)
+        integrand = lambda y: np.cos(2*th_3(y))
+        II = np.pi/4 - 0.5*integrate.quad(integrand, 0, np.pi/2)[0]
+    else:
+        phi_max = phi_max_calc(p, a, b)
+        th_4 = lambda y: theta_4(p, h, y, a, b)
+        th_5 = lambda y: theta_5(p, h, y, a, b)
+        integrand = lambda y: np.cos(2*th_4(y)) - np.cos(2*th_5(y))
+        II = 0.5*integrate.quad(integrand, 0, phi_max)[0]
+
+    return(II)
+
+
+def cosine_intensity2(p, h, a, b):
+    """Calculates the intensity of a cosine distribution that enters an
+    elliptical appeture. Uses a double integral."""
+
+    if p == 0:
+        th_1 = lambda y : theta_1(h, y, a, b)
+        integrand = lambda y,z : np.sin(y)*np.cos(y)
+        II = 2*integrate.dblquad(integrand, 0, np.pi, lambda x: 0, th_1)[0]
+    elif p < a:
+        th_2 = lambda y : theta_2(p, h, y, a, b)
+        integrand = lambda y,z : np.sin(y)*np.cos(y)
+        II = 2*integrate.dblquad(integrand, 0, np.pi, lambda x: 0, th_2)[0]
+    elif p == a:
+        th_3 = lambda y: theta_3(p, h, y, a, b)
+        integrand = lambda y,z : 2*np.sin(y)*np.cos(y)
+        II = integrate.dblquad(integrand, 0, np.pi/2, lambda x: 0, th_3)[0]
+    else:
+        phi_max = phi_max_calc(p, a, b)
+        th_4 = lambda y : theta_4(p, h, y, a, b)
+        th_5 = lambda y : theta_5(p, h, y, a, b)
+        integrand = lambda y,z : 2*np.sin(y)*np.cos(y)
+        II = integrate.dblquad(integrand, 0, phi_max, th_4, th_5)[0]
+
+    return(II)
+
+
+## Conway method functions ---------------------------------------------------#
+
+def integrand_general(phi, p, q, h, a, b):
+    """Integrand for the general case from 'John T. Conway' 'Analytic solution
+    for the solid angle subtended at a point source radiation vector potential'
+    which claims to be general, unlike Abbas et.al. who do not consider the
+    case inside the bounding box but outisde the ellipse."""
+
+    tmp = p*p + q*q + h*h + 2*a*p*np.cos(phi) + 2*b*q*np.sin(phi) + \
+        (a*np.cos(phi))**2 + (b*np.sin(phi))**2
+    term1 = 1 - h/(np.sqrt(tmp))
+    tmp = tmp - h*h
+    term2 = (a*b + p*b*np.cos(phi) + q*a*np.sin(phi))/(tmp)
+    result = term1*term2
+    return(result)
+
+
+def calc_omega(p, q, h, a, b):
+    """Calculates the solid angle using the formula derived by John T. Conway
+    2010. Is faster than the alternative integral in 'solid_angle_calc'.
+
+    Inputs:
+     p - The distance between the point of interest and the centre of the
+         ellipse, projected into the plane of the ellipse along the major axis.
+         Should not be negative.
+     q - The distance between the point of interest and the centre of the
+         ellipse, projected into the plane of the elllipse along the minor
+         axis. Should not be negative
+     h - The perpendicular distance between the point of interest and the plane
+         of the ellipse. Should not be negative.
+     a - The semi-axis of the ellipse along which the point of interest lies
+         when it is projected into the plane of the ellipse.
+     b - The other semi-axis of the ellipse.
+
+    Output:
+     omega - The solid angle subtended by the ellipse from the point of
+             interest
+    """
+
+    omega = integrate.quad(integrand_general, 0, 2*np.pi,
+                           args=(p, q, h, a, b,))[0]
+    return(omega)
+

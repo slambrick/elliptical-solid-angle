@@ -3,7 +3,7 @@
 """
 Created on Sun May 27 15:51:10 2018
 
-Copyright (c) 2019, Sam Lambrick
+Copyright (c) 2019-22, Sam Lambrick
 All rights reserverd.
 Subject to the MIT licence.
 
